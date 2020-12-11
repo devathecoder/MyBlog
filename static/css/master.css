@@ -1,0 +1,46 @@
+/* Footer Section Css Start */
+.fhover:hover{
+    font-size: 30px;
+    transition-duration: 0.25s;
+    cursor: pointer;
+}
+.hhover:hover{
+    transition-duration: 0.25s;
+    cursor: pointer;
+    color: black;
+    font-size: 15px;
+}
+
+.hover-nav:hover{
+    color: red;
+}
+  
+/* Footer Section CSs end */
+
+/* Header Section css start*/
+#adjust-search{
+    min-width: 100px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+/* Header section css end */
+
+
+.dropdown:hover>.dropdown-menu {
+    display: block;
+  }
+  
+  .dropdown>.dropdown-toggle:active {
+    /*Without this, clicking will make it sticky*/
+      pointer-events: none;
+  }
+
+a.dropdown-item{
+    font-weight: bold;
+}
+  
+a.dropdown-item:hover{
+    font-size: 22px;
+    background-color: rgb(38, 38, 38);
+    color: white;
+}

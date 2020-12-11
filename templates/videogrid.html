@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block body %}
+<header class="masthead" style="background-image: url('{{ url_for('static', filename='img/contact-bg.jpg') }}')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="page-heading">
+            <h1>{{params['video_page_title']}}</h1>
+            <span class="subheading">{{params['video_page_tagline']}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+<div class="d-flex justify-content-around flex-wrap" style="max-width: 78%; margin: auto;">
+    {%for vid in video%}
+    <div class="card" style="max-width: 18rem; margin-top: 2vh;">
+        <iframe class="embed-responsive-item" src="{{vid.link}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="card-body">
+          <h5 class="card-title font-weight-bold">{{vid.title}}</h5>
+          <p class="card-text">{{vid.tagline}}</p>
+          {%set playvideo = '/video/' + vid.sno|string%}
+          <a href="{{playvideo}}" class="btn btn-danger" target="_blank">Go To Video</a>
+        </div>
+    </div>
+    {%endfor%}
+</div>
+{% endblock %} 

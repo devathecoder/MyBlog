@@ -43,23 +43,25 @@
       }
     </style>
     <!-- Custom styles for this template -->
-    <<link href="{{ url_for('static', filename='/css/signin.css')}}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='/css/signin.css')}}" rel="stylesheet">
   </head>
-  <body class="text-center">
-  <form class="form-signin" action="/dashboard" method="POST">
-  <img class="mb-4" src="{{ url_for('static', filename='/docs/4.5/assets/brand/bootstrap-solid.svg')}}" alt="" width="72" height="72">
-  <h1 class="h3 mb-3 font-weight-normal">Admin Login</h1>
-  <label for="uname" class="sr-only">User Name</label>
-  <input type="text" id="uname" class="form-control" placeholder="User Name" required autofocus name="uname">
-  <label for="pass" class="sr-only">Password</label>
-  <input type="password" id="pass" class="form-control" placeholder="Password" required name="pass">
-  <div class="checkbox mb-3">
-    <label>
-      <input type="checkbox" value="remember-me"> Remember me
-    </label>
-  </div>
-  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-  <p class="mt-5 mb-3 text-muted">&copy; {{params['blog_name']}}2017-2020</p>
-</form>
+  <body >
+      <div class=" text-center d-flex justify-content-center" style="margin-top: 27vh;">
+        <form class="form-signin" action="/dashboard" method="POST">
+          <img class="mb-4" src="{{ url_for('static', filename='/docs/4.5/assets/brand/bootstrap-solid.svg')}}" alt="" width="72" height="72">
+          <h1 class="h3 mb-3 font-weight-normal">Admin Login</h1>
+          <label for="uname" class="sr-only">User Name</label>
+          <input type="text" id="uname" class="form-control" placeholder="User Name" required autofocus name="uname">
+          <label for="pass" class="sr-only">Password</label>
+          <input type="password" id="pass" class="form-control" placeholder="Password" required name="pass">
+          <div class="checkbox mb-3">
+            <label>
+            <input type="checkbox" value="remember-me"> Remember me
+            </label>
+          </div>
+          <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+          <p class="mt-5 mb-3 text-muted">&copy; {{params['blog_name']}}2017-2020</p>
+        </form>
+      </div>
 </body>
 </html>

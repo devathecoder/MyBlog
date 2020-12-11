@@ -20,40 +20,184 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ url_for('static', filename='css/clean-blog.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/master.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
   </head>
 
   <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-      <div class="container">
-        <a class="navbar-brand" href="/">{{params["blog_name"]}}</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          Menu
-          <i class="fa fa-bars"></i>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark sticky-top">
+      <!-- <img class="brandLogo" src="{{ url_for('static', filename='img/Iconfor.jpg')}}" alt="My image" height="20" width="20"> -->
+      <!-- <a class="navbar-brand text-white" href="/">{{params["blog_name"]}}</a> -->
+      <a class="navbar-brand" href="/">
+        <i class="fas fa-book-reader fa-inverse" style="font-size: 30px;"></i>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="true" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse show" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link text-white font-weight-bold" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white font-weight-bold" href="/about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white font-weight-bold" href="/contact">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white font-weight-bold" href="/videos">Video</a>
+          </li>
+          <li class="dropdown nav-item">
+            <a class="dropdown-toggle text-white font-weight-bold nav-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Previous year question papers
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <div class="container">
+                <a class="dropdown-item" href="/details/BHU">BHU</a>
+                <a class="dropdown-item" href="/details/JNU">JNU</a>
+                <a class="dropdown-item" href="/details/IIT-JAM">IIT JAM</a>
+                <a class="dropdown-item" href="/details/DU">DU</a>
+                <a class="dropdown-item" href="/details/GATB">GATB</a>
+                <a class="dropdown-item" href="/details/GATE-Life-Science">GATE Life Science</a>
+                <a class="dropdown-item" href="/details/Jamia-millia-islamia">JAMIA MILLIA ISLAMIA </a>
+                <a class="dropdown-item" href="/details/CSIR-NET">CSIR NET</a>
+                <a class="dropdown-item" href="/details/ICMR">ICMR</a>
+                <a class="dropdown-item" href="/details/BET">BET</a>
+                <a class="dropdown-item" href="/details/GS-TIFR">GS (GRADUATE SHOOL ADMISSION)-TIFR</a>
+              </div>
+            </div>
+          </li>
+          
+          {% if params['login']  == true %}
             <li class="nav-item">
-              <a class="nav-link" href="/">Home</a>
+              <a class="nav-link text-white font-weight-bold" href="/logoutuser">Logout({{params['usernow']}})</a>
             </li>
+          {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
+              <a class="nav-link text-white font-weight-bold" href="/login" data-toggle="modal" data-target="#loginmodal">Login</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/contact">Contact</a>
-            </li>
-          </ul>
+          {% endif %}
+          {% if params['login']  != true %}
+          <li class="nav-item">
+            <a class="nav-link text-white font-weight-bold" href="/signup"  data-toggle="modal" data-target="#signupmodal">SignUp</a>
+          </li>
+          {% endif %}
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+
+
+
+      <!-- Code from here  -->
+
+<!-- 
+      {% if params['error'] == False %}
+      <div class="alert alert-success alert-dismissible fade">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Success!</strong> Indicates a successful or positive action.
+      </div>
+      {% endif %}
+  
+      {% if params['error'] == true %}
+      <div class="alert alert-danger alert-dismissible fade show">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Success!</strong> Indicates a successful or positive action.
+      </div>
+      {% endif %} -->
+
+
+    </nav>
+
+
+    <div class="container">
+      <div class="modal fade" id="loginmodal">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h3 class="text-primary ">login</h3>
+              <button class="close" data-dismiss= "modal"> &times;</button>
+            </div>
+
+            <div class="modal-body">
+              <!-- Here login form starts -->
+              <form novalidate action="\login" method="POST">
+                <div class="form-group">
+                  <label for="username"><i class="fa fa-user fa-2x"></i> Username</label>
+                  <input type="text" name="username" id="" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="password"><i class="fa fa-lock fa-2x"></i> password</label>
+                  <input type="password" name="password" id="" class="form-control" required>
+                </div>
+                <div class="g-recaptcha" data-sitekey="6LdvcqwUAAAAACmPYNVoiJA7D84xLSQQt5g9p10m"><div style="width: 304px; height: 78px;"><div><iframe src="https://www.google.com/recaptcha/api2/anchor?ar=1&amp;k=6LdvcqwUAAAAACmPYNVoiJA7D84xLSQQt5g9p10m&amp;co=aHR0cHM6Ly93d3cuY29kZXdpdGhoYXJyeS5jb206NDQz&amp;hl=en&amp;v=UFwvoDBMjc8LiYc1DKXiAomK&amp;size=normal&amp;cb=r818n6ir5ccf" width="304" height="78" role="presentation" name="a-cgz6miyfx4aj" frameborder="0" scrolling="no" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation allow-modals allow-popups-to-escape-sandbox"></iframe></div><textarea id="g-recaptcha-response" name="g-recaptcha-response" class="g-recaptcha-response" style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"></textarea></div></div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-danger">login</button>
+                </div>
+              </form>
+              <!-- Here login form ends -->
+            </div>
+            
+          </div>
         </div>
       </div>
-    </nav>
+    </div>
+    
+
+
+    <!-- SignUp modal Start -->
+    <div class="container">
+      <div class="modal fade" id="signupmodal">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h3 class="text-primary ">SignUp</h3>
+              <button class="close" data-dismiss= "modal"> &times;</button>
+            </div>
+
+            <div class="modal-body">
+
+
+              <!-- Here is the signup form starts-->
+              <form novalidate action="\signup" method="POST">
+                <div class="form-group">
+                  <label for="username"><i class="fa fa-user fa-2x"></i> Username</label>
+                  <input type="text" name="username" id="" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="password"><i class="fa fa-lock fa-2x"></i> password</label>
+                  <input type="password" name="password" id="" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="Email"><i class="fa fa-envelope fa-2x"></i> Email</label>
+                  <input type="Email" name="email" id="" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-danger">SignUp</button>
+                </div>
+              </form>
+              <!-- Here signup form ends -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- SignUP modal ends -->
 
 {% block body %} {% endblock %}
 
- <hr>
+    <div>&nbsp;</div>
     <!-- Footer -->
-    <footer>
+    <footer class="container-fluid bg-dark my-0 py-3 text-light" >
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
@@ -61,42 +205,61 @@
               <li class="list-inline-item">
                 <a href="{{params['tw_url']}}", target="_blank">
                   <span class="fa-stack fa-lg">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                    <i class="fas fa-circle fa-stack-2x" style="color: grey;"></i>
+                    <i class="fab fa-twitter fa-stack-1x fa-inverse fhover" aria-hidden="true"></i>
                   </span>
                 </a>
               </li>
               <li class="list-inline-item">
                 <a href="{{params['fb_url']}}", target="_blank">
                   <span class="fa-stack fa-lg">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                    <i class="fas fa-circle fa-stack-2x" style="color: grey;"></i>
+                    <i class="fab fa-facebook fa-stack-1x fa-inverse fhover"></i>
                   </span>
                 </a>
               </li>
               <li class="list-inline-item">
                 <a href="{{params['gh_url']}}", target="_blank">
                   <span class="fa-stack fa-lg">
-                    <i class="fa fa-circle fa-stack-2x"></i>
-                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                    <i class="fas fa-circle fa-stack-2x" style="color: grey;"></i>
+                    <i class="fab fa-github fa-stack-1x fa-inverse fhover"></i>
                   </span>
                 </a>
               </li>
             </ul>
-            <p class="copyright text-muted">Copyright © TheCodingThunder</p>
+              <p class="mb-0 text-center">2020-2021 Copyright © E-tourist Guide</p>
+              <p class="mb-0 text-center">
+                <a href="#">Back to top |</a>
+                <a href="#">Privacy |</a>
+                <a href="#">Terms</a>
+              </p>
           </div>
         </div>
       </div>
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
 
     <!-- Custom scripts for this template -->
     <script src="{{ url_for('static', filename='js/clean-blog.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/master.js') }}"></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-growl/1.0.0/jquery.bootstrap-growl.min.js"></script> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-growl/1.0.6/bootstrap-growl.min.js"></script>
+    
 
   </body>
 
 </html>
-

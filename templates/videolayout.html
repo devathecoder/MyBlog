@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block li %}
+<li class="dropdown nav-item">
+  <a class="dropdown-toggle text-white font-weight-bold nav-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Previous year question papers
+  </a>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <div class="container">
+      <a class="dropdown-item" href="#">Action</a>
+      <a class="dropdown-item" href="#">Another action</a>
+      <a class="dropdown-item" href="#">Something else here</a>
+    </div>
+  </div>
+</li>
+{% endblock %}
+{% block body %}
+<div class="container-fluid" style="height: auto !important;">
+
+    <div class="row" id="sticky-d">
+        
+        <div class="col-md-9 bg-black px-0" id="video-box" style="background-color: black;">
+            <div class="container videoContainer embed-responsive embed-responsive-16by9 px-3">
+                <iframe class="embed-responsive-item" src="{{play}}" allowfullscreen=""></iframe>
+            </div>
+            <hr>
+        </div>
+  
+        <div class="col-md-3 px-0" id="course-content-box">
+            <div class="row mx-0 py-2 px-3 bg-lgrey">
+                <h5> Course Content<i class="mx-2 fas fa-plus" id="toggleCourse" aria-hidden="true"></i></h5>
+                <button id="togglePlayer" class="btn btn-sm btn-danger mx-3">Hide Player</button>
+            </div>
+        </div>
+  
+    </div>
+    
+  </div>
+{% endblock %}

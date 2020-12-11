@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect,url_for
 from flask_sqlalchemy import SQLAlchemy
 import json
 from werkzeug.utils import secure_filename
@@ -7,11 +7,14 @@ from datetime import datetime
 import os
 import math
 
+# Repository used is MyBlog
 
 with open("config.json", "r") as c:
     params = json.load(c)["params"]
 local_server = True
 
+
+users = []
 app = Flask(__name__)
 app.secret_key = 'super secret key'
 app.config['UPLOAD_FOLDER'] = params['upload_location']
@@ -53,8 +56,42 @@ class Post(db.Model):
     img_file = db.Column(db.String(12), nullable = False)
     date = db.Column(db.String(12), unique=False, nullable = False)
 
+class Usersignup(db.Model):
+    '''
+    sno, name, email, phone_num, mes, date
+    '''
+    sno = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=False, nullable=False)
+    email = db.Column(db.String(20), unique=False, nullable=False)
+    password = db.Column(db.String(50), unique = False, nullable = False)
+    date = db.Column(db.String(12), unique=False, nullable=False)
 
-@app.route("/")
+class Video(db.Model):
+    '''
+    sno, name, email, phone_num, mes, date
+    '''
+    sno = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80), unique=False, nullable=False)
+    tagline = db.Column(db.String(120), unique=False, nullable=False)
+    slug = db.Column(db.String(20), unique=False, nullable=False)
+    link = db.Column(db.String(120), unique=False, nullable=False)
+    date = db.Column(db.String(12), unique=False, nullable = False)
+
+class University(db.Model):
+    '''
+    sno, name, email, phone_num, mes, date
+    '''
+    sno = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80), unique=False, nullable=False)
+    slug = db.Column(db.String(20), unique=False, nullable=False)
+    content = db.Column(db.String(120), unique=False, nullable=False)
+    tagline = db.Column(db.String(120), unique=False, nullable=False)
+    img_file = db.Column(db.String(12), nullable = False)
+    date = db.Column(db.String(12), unique=False, nullable = False)
+
+
+
+@app.route("/", methods = ['GET', 'POST'])
 def home():
     posts = Post.query.filter_by().all()
     last = math.ceil(len(posts) / int(params['no_of_posts']))
@@ -73,6 +110,17 @@ def home():
     else:
         prev = "/?page=" + str(page - 1)
         next = "/?page=" + str(page + 1)
+
+    # if request.method == 'POST':
+    #     session.pop('user_id', None)
+    #     username = request.form['username']
+    #     password = request.form['password']
+    #
+    #     user = [x for x in users if x.username == username][0]
+    #     if user and user.password == password:
+    #         session['user_id'] = user.id
+    #         return redirect('/success')
+    #     return redirect('/')
     return render_template('index.html', params = params, posts = posts, prev = prev,  next = next)
 
 
@@ -83,6 +131,9 @@ def about():
 
 @app.route("/dashboard", methods = ['GET', 'POST'])
 def dashboard():
+    users = Usersignup.query.filter_by().all()
+    video = Video.query.filter_by().all()
+    university = University.query.filter_by().all()
     if 'user' in session and session['user'] == params['admin_user']:
         posts = Post.query.all()
         return render_template('dashboard.html', params = params, posts = posts)
@@ -93,8 +144,10 @@ def dashboard():
             #set the session variable
             session['user'] = username
             posts = Post.query.all()
-            return render_template('dashboard.html', params=params, posts = posts)
-    return render_template('login.html', params = params)
+            video = Video.query.filter_by().all()
+            university = University.query.filter_by().all()
+            return render_template('dashboard.html', params=params, posts = posts, users = users, video= video, details = university)
+    return render_template('login.html', params = params, users = users, video = video, details = university)
 
 
 @app.route("/post/<string:post_slug>", methods = ['GET'])
@@ -102,6 +155,10 @@ def post_route(post_slug):
     post = Post.query.filter_by(slug = post_slug).first()
     return render_template('post.html', params = params, post = post)
 
+@app.route("/details/<string:university_slug>", methods = ['GET'])
+def university_route(university_slug):
+    university = University.query.filter_by(slug = university_slug).first()
+    return render_template('details.html', params = params, details = university)
 
 @app.route("/contact", methods = ['GET', 'POST'])
 def contact():
@@ -119,8 +176,8 @@ def contact():
 
     return render_template('contact.html', params = params)
 
-@app.route("/edit/<string:sno>", methods = ['GET', 'POST'])
-def edit(sno):
+@app.route("/edit-post/<string:sno>", methods=['GET', 'POST'])
+def editpost(sno):
     if 'user' in session and session['user'] == params['admin_user']:
         if request.method == 'POST':
             box_title = request.form.get('title')
@@ -131,11 +188,11 @@ def edit(sno):
             date = datetime.now()
 
             if sno == '0':
-                post = Post(title = box_title, tagline = tline, slug = slug, content = content, img_file = img_file, date = date)
+                post = Post(title=box_title, tagline=tline, slug=slug, content=content, img_file=img_file, date=date)
                 db.session.add(post)
                 db.session.commit()
             else:
-                post = Post.query.filter_by(sno = sno).first()
+                post = Post.query.filter_by(sno=sno).first()
                 post.title = box_title
                 post.slug = slug
                 post.content = content
@@ -143,9 +200,81 @@ def edit(sno):
                 post.img_file = img_file
                 post.date = date
                 db.session.commit()
-                return redirect('/edit/' + sno)
-        post = Post.query.filter_by(sno = sno).first()
-        return render_template('edit.html', params = params, post = post, sno= sno)
+                return redirect('/edit-post/' + sno)
+        post = Post.query.filter_by(sno=sno).first()
+        return render_template('edit-post.html', params=params, post=post, sno=sno)
+
+@app.route("/edit-university/<string:sno>", methods=['GET', 'POST'])
+def edituniversity(sno):
+    if 'user' in session and session['user'] == params['admin_user']:
+        if request.method == 'POST':
+            box_title = request.form.get('title')
+            tline = request.form.get('tline')
+            slug = request.form.get('slug')
+            content = request.form.get('Content')
+            img_file = request.form.get('img_file')
+            date = datetime.now()
+
+            if sno == '0':
+                university = University(title=box_title, tagline=tline, slug=slug, content=content, img_file=img_file, date=date)
+                db.session.add(university)
+                db.session.commit()
+            else:
+                university = University.query.filter_by(sno=sno).first()
+                university.title = box_title
+                university.slug = slug
+                university.content = content
+                university.tagline = tline
+                university.img_file = img_file
+                university.date = date
+                db.session.commit()
+                return redirect('/edit-university/' + sno)
+        university = University.query.filter_by(sno=sno).first()
+        return render_template('edit-university.html', params=params, details=university, sno=sno)
+
+
+@app.route("/delete-post/<string:sno>", methods=['GET', 'POST'])
+def deletepost(sno):
+    if 'user' in session and session['user'] == params['admin_user']:
+        post = Post.query.filter_by(sno=sno).first()
+        db.session.delete(post)
+        db.session.commit()
+    return redirect('/dashboard')
+
+@app.route("/edit-video/<string:sno>", methods=['GET', 'POST'])
+def editvideo(sno):
+    if 'user' in session and session['user'] == params['admin_user']:
+        if request.method == 'POST':
+            box_title = request.form.get('title')
+            tline = request.form.get('tline')
+            slug = request.form.get('slug')
+            link = request.form.get('Content')
+            date = datetime.now()
+
+            if sno == '0':
+                video = Video(title=box_title, tagline=tline, slug=slug, link = link, date=date)
+                db.session.add(video)
+                db.session.commit()
+            else:
+                video = Video.query.filter_by(sno=sno).first()
+                video.title = box_title
+                video.tagline = tline
+                video.slug = slug
+                video.link = link
+                video.date = date
+                db.session.commit()
+                return redirect('/edit-video/' + sno)
+        video = Video.query.filter_by(sno=sno).first()
+        return render_template('edit-video.html', params=params, video = video, sno=sno)
+
+@app.route("/delete-video/<string:sno>", methods=['GET', 'POST'])
+def deletevideo(sno):
+    if 'user' in session and session['user'] == params['admin_user']:
+        video = Video.query.filter_by(sno=sno).first()
+        db.session.delete(video)
+        db.session.commit()
+    return redirect('/dashboard')
+
 
 @app.route("/uploader", methods = ['GET', 'POST'])
 def uploader():
@@ -160,13 +289,81 @@ def logout():
     session.pop('user')
     return redirect('/dashboard')
 
-@app.route("/delete/<string:sno>", methods = ['GET', 'POST'])
-def delete(sno):
-    if 'user' in session and session['user'] == params['admin_user']:
-        post = Post.query.filter_by(sno = sno).first()
-        db.session.delete(post)
+@app.route("/signup", methods= ['GET', 'POST'])
+def usersignup():
+    if (request.method == 'POST'):
+        '''Add entry to the database'''
+        name = request.form.get('username')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        date = datetime.now()
+
+        entry = Usersignup(username = name, email = email, password = password, date = date)
+        db.session.add(entry)
         db.session.commit()
-    return redirect('/dashboard')
+        mail.send_message("New User Signed Up " + name, sender=email, recipients=[params['gmail_user']], body = "The username is : " + name + "\n" + "Email id is : " + email + "\n" + "At : " + str(date))
+    return render_template('usersignup.html', params = params)
+
+@app.route("/login", methods= ['GET', 'POST'])
+def userlogin():
+    if (request.method == 'POST'):
+        '''Add entry to the database'''
+        name = request.form.get('username')
+        password = request.form.get('password')
+        users = Usersignup.query.filter_by().all()  # Access a database table Very Important *************************************
+        for x in users:
+            if x.username == name and x.password == password:
+                params['login'] = True
+                params['usernow'] = name
+                params['error'] = False
+                return redirect('/')
+        params['error'] = True
+        return redirect('/')
+
+@app.route("/logoutuser")
+def logoutuser():
+    # session.pop('user')
+    params['login'] = False
+    params['usernow'] = None
+    params['error'] = 'abc'
+    return redirect('/')
+
+@app.route("/videos", methods= ['GET', 'POST'])
+def Videogrid():
+    video = Video.query.filter_by().all()
+    return render_template("videogrid.html", params= params, video = video)
+
+
+@app.route("/video/<string:sno>", methods = ['GET', 'POST'])
+def video(sno):
+    if 'user' in session and session['user'] == params['admin_user']:
+        if request.method == 'POST':
+            box_title = request.form.get('title')
+            tline = request.form.get('tline')
+            slug = request.form.get('slug')
+            content = request.form.get('Content')
+            date = datetime.now()
+
+            if sno == '0':
+                video = Video(title = box_title, tagline = tline, slug = slug, link = content, date = date)
+                db.session.add(video)
+                db.session.commit()
+            else:
+                video = Video.query.filter_by(sno = sno).first()
+                video.title = box_title
+                video.slug = slug
+                video.content = content
+                video.tagline = tline
+                video.date = date
+                db.session.commit()
+                return redirect('/video/' + sno)
+        video = Video.query.filter_by(sno = sno).first()
+        return render_template('video.html', params = params, video = video, sno= sno)
+    else:
+        video = Video.query.filter_by(sno = sno).first()
+        return render_template('videolayout.html', play = video.link, params= params)
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
