@@ -6,6 +6,8 @@ from flask_mail import Mail
 from datetime import datetime
 import os
 import math
+import sys
+import logging
 
 # Repository used is MyBlog
 
@@ -16,6 +18,8 @@ local_server = True
 
 users = []
 app = Flask(__name__)
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 app.secret_key = 'super secret key'
 app.config['UPLOAD_FOLDER'] = params['upload_location']
 app.config.update(
