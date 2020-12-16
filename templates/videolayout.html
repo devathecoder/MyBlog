@@ -1,18 +1,4 @@
 {% extends "layout.html" %}
-{% block li %}
-<li class="dropdown nav-item">
-  <a class="dropdown-toggle text-white font-weight-bold nav-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Previous year question papers
-  </a>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <div class="container">
-      <a class="dropdown-item" href="#">Action</a>
-      <a class="dropdown-item" href="#">Another action</a>
-      <a class="dropdown-item" href="#">Something else here</a>
-    </div>
-  </div>
-</li>
-{% endblock %}
 {% block body %}
 <div class="container-fluid" style="height: auto !important;">
 
@@ -23,6 +9,9 @@
                 <iframe class="embed-responsive-item" src="{{play}}" allowfullscreen=""></iframe>
             </div>
             <hr>
+            <div class="container">
+              This is Comment Section
+            </div>
         </div>
   
         <div class="col-md-3 px-0" id="course-content-box">
@@ -35,4 +24,5 @@
     </div>
     
   </div>
+
 {% endblock %}
