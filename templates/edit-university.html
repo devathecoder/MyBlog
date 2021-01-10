@@ -23,7 +23,7 @@
     <link href="{{ url_for('static', filename='css/master.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-
+    <link href="{{ url_for('static', filename='vendor/ckeditor/ckeditor.js')}}" rel="stylesheet" type="text/css">
   </head>
 
   <body>
@@ -152,9 +152,9 @@
 
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script src="{{ url_for('static', filename='vendor/ckeditor/ckeditor.js') }}"></script>
     <script>
-      $('#Content').summernote();
+      CKEDITOR.replace('Content')
     </script>
 
 
